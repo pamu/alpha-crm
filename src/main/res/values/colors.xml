@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#32CD32</color>
+    <color name="colorPrimaryDark">#dad9d9</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#4CAF50</color>
+    <color name="lightPrimaryColor">#D1C4E9</color>
+    <color name="text">#FFFFFF</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#727272</color>
+    <color name="dividerColor">#B6B6B6</color>
+
+    <!-- Wizard Colors -->
+    <color name="wizard_line_button">#ffc5c5c5</color>
+    <color name="wizard_pager_default">#ffc7c7c7</color>
+    <color name="wizard_pager_selected">#444444</color>
+
+    <!-- Text colors -->
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+</resources>

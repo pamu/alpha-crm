@@ -30,3 +30,13 @@ proguard/
 
 # Android Studio captures folder
 captures/
+
+.idea
+
+target
+
+project/project
+
+project/target
+
+src/main/res/values/strings.xml
