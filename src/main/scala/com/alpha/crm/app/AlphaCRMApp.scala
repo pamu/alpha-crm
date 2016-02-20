@@ -9,7 +9,6 @@ class AlphaCRMApp extends Application {
 
   override def onCreate(): Unit = {
     super.onCreate()
-
   }
 
 }
