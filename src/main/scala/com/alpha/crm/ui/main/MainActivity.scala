@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.{ActionBarDrawerToggle, AppCompatActivity}
 import android.view.{MenuItem, Menu, View}
 import com.alpha.crm.R
+import com.alpha.crm.ui.feed.FeedFragment
 import com.alpha.crm.ui.menu.MenuFragment
 import macroid.Contexts
 import macroid.FullDsl._
@@ -28,6 +29,11 @@ class MainActivity
 
     getSupportActionBar.setDisplayHomeAsUpEnabled(true)
     getSupportActionBar.setHomeButtonEnabled(true)
+
+    runUi(replaceFragment(
+      builder = f[FeedFragment],
+      R.id.frame_container,
+      tag = Some(classOf[FeedFragment].getSimpleName)))
 
     drawerLayout map { drawerLayout =>
       val drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_menu, R.string.close_menu) {
