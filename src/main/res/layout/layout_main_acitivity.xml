@@ -27,14 +27,11 @@
     </LinearLayout>
 
     <!-- Listview to display slider menu -->
-    <ListView
-            android:id="@+id/list_slider_menu"
-            android:layout_width="240dp"
+    <FrameLayout
+            android:background="@color/colorPrimary"
+            android:id="@+id/fragment_menu"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:choiceMode="singleChoice"
-            android:divider="@color/secondaryText"
-            android:dividerHeight="1dp"
-            android:listSelector="@drawable/list_selector"
-            android:background="@color/colorPrimaryDark"/>
+            android:layout_gravity="start" />
+
 </android.support.v4.widget.DrawerLayout>
