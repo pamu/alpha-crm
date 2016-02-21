@@ -5,12 +5,14 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.{ViewPager, PagerAdapter}
 import android.support.v7.widget.{LinearLayoutManager, RecyclerView}
 import android.support.v7.widget.RecyclerView.ViewHolder
+import android.util.Log
 import android.view.{View, ViewGroup, LayoutInflater}
 import android.widget.{TextView, ImageView}
 import com.alpha.crm.R
 import com.alpha.crm.commons.ContextWrapperProvider
+import com.firebase.client.{DataSnapshot, FirebaseError, ValueEventListener, Firebase}
 import com.squareup.picasso.Picasso
-import macroid.{ActivityContextWrapper, ContextWrapper, Contexts}
+import macroid.{ContextWrapper, Contexts}
 import macroid._
 import macroid.FullDsl._
 import com.fortysevendeg.macroid.extras.RecyclerViewTweaks._
@@ -23,23 +25,61 @@ class FeedFragment
     with Contexts[Fragment]
     with ContextWrapperProvider {
 
+  val ref = new Firebase("https://brilliant-heat-4158.firebaseio.com")
 
   override implicit lazy val contextProvider: ContextWrapper = fragmentContextWrapper
 
   override def onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle): View = {
     val rootView = inflater.inflate(R.layout.feed_fragment_layout, container, false)
     val rvFeed = rootView.findViewById(R.id.rv_feed).asInstanceOf[RecyclerView]
-    runUi(Some(rvFeed) <~ rvAdapter(new FeedAdapter(List(
-      Feed("Hello", "989889889", "qqeqeqe", List())))) <~ rvLayoutManager(new LinearLayoutManager(contextProvider.application)))
+    //    runUi(Some(rvFeed) <~ rvAdapter(new FeedAdapter(List(
+    //      Feed("Hello", "989889889", "qqeqeqe", List())))) <~ rvLayoutManager(new LinearLayoutManager(contextProvider.application)))
+    runUi(toast("Loading ...")(contextProvider) <~ fry)
+    ref.addValueEventListener(new ValueEventListener {
+
+      override def onDataChange(dataSnapshot: DataSnapshot): Unit = {
+        val buffer = scala.collection.mutable.ListBuffer[Feed]()
+        val topChildren = dataSnapshot.getChildren.iterator()
+        Log.d("datasnapshot", dataSnapshot.toString)
+        while (topChildren.hasNext) {
+          val topChild = topChildren.next()
+          Log.d("top child", topChild.toString)
+          if (topChild.child("name").exists()) {
+            if (topChild.child("complete_address").exists()) {
+              if (topChild.child("phone").exists()) {
+                if (topChild.child("images").exists()) {
+                  val feed =
+                    Feed(
+                      topChild.child("name").getValue.toString,
+                      topChild.child("complete_address").getValue.toString,
+                      topChild.child("phone").getValue.toString,
+                      topChild.child("images").getValue.toString.split(",").toList.map(_.trim)
+                    )
+                  buffer += feed
+                }
+              }
+            }
+          }
+        }
+        runUi(Some(rvFeed) <~ rvAdapter(new FeedAdapter(buffer.toList)) <~ rvLayoutManager(new LinearLayoutManager(contextProvider.application)))
+      }
+
+      override def onCancelled(firebaseError: FirebaseError): Unit = {
+        if (firebaseError != null) {
+          runUi(toast("Error !!!")(contextProvider) <~ fry)
+        }
+      }
+
+    })
     rootView
   }
 
 }
 
 case class Feed(name: String,
-                 phone: String,
-                 address: String,
-                 images: List[String])
+                phone: String,
+                address: String,
+                images: List[String])
 
 class FeedViewHolder(layout: View) extends ViewHolder(layout) {
   def bind(feed: Feed): Unit = {
@@ -84,7 +124,7 @@ class PrescriptionPagerAdapter(images: List[String]) extends PagerAdapter {
 
     Picasso
       .`with`(container.getContext)
-      .load(images(position))
+      .load(if (images(position).trim == "") "http://something.something" else images(position))
       .fit()
       .centerCrop()
       .placeholder(R.drawable.ic_launcher)
